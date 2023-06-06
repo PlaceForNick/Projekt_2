@@ -23,9 +23,47 @@
 """
 
 import os
-
+import numpy as np
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
+from qgis.core import (
+  QgsApplication,
+  QgsDataSourceUri,
+  QgsCategorizedSymbolRenderer,
+  QgsClassificationRange,
+  QgsPointXY,
+  QgsProject,
+  QgsExpression,
+  QgsField,
+  QgsFields,
+  QgsFeature,
+  QgsFeatureRequest,
+  QgsFeatureRenderer,
+  QgsGeometry,
+  QgsGraduatedSymbolRenderer,
+  QgsMarkerSymbol,
+  QgsMessageLog,
+  QgsRectangle,
+  QgsRendererCategory,
+  QgsRendererRange,
+  QgsSymbol,
+  QgsVectorDataProvider,
+  QgsVectorLayer,
+  QgsVectorFileWriter,
+  QgsWkbTypes,
+  QgsSpatialIndex,
+  QgsVectorLayerUtils
+)
+
+from qgis.core.additions.edit import edit
+
+from qgis.PyQt.QtGui import (
+    QColor,
+)
+
+
+
+
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -42,3 +80,32 @@ class WtyczkaDialog(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        
+        self.textBrowser_info_zwrotne.setText('Zaznacz 2 elementy, aby móc obliczyć odległość.\nZaznacz minimum 3 elementy aby móc obliczyć pole powierzchni.')
+        self.pushButton_obl_odleglosc.clicked.connect(self.oblicz_odleglosc)
+        
+        self.kreska = '-'*52
+        
+    def oblicz_odleglosc(self):
+        zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy.currentLayer().selectedFeatures()
+        liczba_zaznaczonych_elementow = len(zaznaczone_elementy)
+        self.textBrowser_info_zwrotne.append(f'{self.kreska}\nLiczba zaznaczonych elementów wynosi:\n{liczba_zaznaczonych_elementow}')
+        
+        # "layer" is a QgsVectorLayer instance
+        layer = self.mMapLayerComboBox_wybor_warstwy.currentLayer()
+        features = layer.getFeatures()
+        
+        X = []
+        Y = []
+        
+        # Point layer
+        for f in layer.getFeatures():
+            geom = f.geometry()
+            y = geom.asPoint().y()
+            x = geom.asPoint().x()
+            X.append(x)
+            Y.append(y)
+            
+        odl = np.sqrt((X[1] - X[0])**2 + (Y[1] - Y[0])**2)
+        
+        self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczona odległość wynosi:\n{odl:0.3f} [nieznanej jednostki]')

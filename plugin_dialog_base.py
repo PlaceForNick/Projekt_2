@@ -14,9 +14,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_WtyczkaDialogBase(object):
     def setupUi(self, WtyczkaDialogBase):
         WtyczkaDialogBase.setObjectName("WtyczkaDialogBase")
-        WtyczkaDialogBase.resize(400, 340)
+        WtyczkaDialogBase.resize(400, 585)
         self.button_box_ok_anuluj = QtWidgets.QDialogButtonBox(WtyczkaDialogBase)
-        self.button_box_ok_anuluj.setGeometry(QtCore.QRect(30, 280, 341, 32))
+        self.button_box_ok_anuluj.setGeometry(QtCore.QRect(20, 550, 341, 32))
         self.button_box_ok_anuluj.setOrientation(QtCore.Qt.Horizontal)
         self.button_box_ok_anuluj.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.button_box_ok_anuluj.setObjectName("button_box_ok_anuluj")
@@ -33,7 +33,7 @@ class Ui_WtyczkaDialogBase(object):
         self.label_info_dol.setGeometry(QtCore.QRect(60, 170, 251, 21))
         self.label_info_dol.setObjectName("label_info_dol")
         self.textBrowser_info_zwrotne = QtWidgets.QTextBrowser(WtyczkaDialogBase)
-        self.textBrowser_info_zwrotne.setGeometry(QtCore.QRect(60, 190, 271, 51))
+        self.textBrowser_info_zwrotne.setGeometry(QtCore.QRect(60, 190, 271, 311))
         self.textBrowser_info_zwrotne.setObjectName("textBrowser_info_zwrotne")
         self.label_info_gora = QtWidgets.QLabel(WtyczkaDialogBase)
         self.label_info_gora.setGeometry(QtCore.QRect(60, 40, 251, 20))
