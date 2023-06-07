@@ -84,7 +84,7 @@ class WtyczkaDialog(QtWidgets.QDialog, FORM_CLASS):
         self.textBrowser_info_zwrotne.setText('Zaznacz 2 elementy, aby móc obliczyć odległość.\nZaznacz minimum 3 elementy aby móc obliczyć pole powierzchni.')
         self.pushButton_obl_odleglosc.clicked.connect(self.oblicz_odleglosc)
         
-        self.kreska = '-'*52
+        self.kreska = '-'*46
         
     def oblicz_odleglosc(self):
         zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy.currentLayer().selectedFeatures()
@@ -92,20 +92,20 @@ class WtyczkaDialog(QtWidgets.QDialog, FORM_CLASS):
         self.textBrowser_info_zwrotne.append(f'{self.kreska}\nLiczba zaznaczonych elementów wynosi:\n{liczba_zaznaczonych_elementow}')
         
         # "layer" is a QgsVectorLayer instance
-        layer = self.mMapLayerComboBox_wybor_warstwy.currentLayer()
-        features = layer.getFeatures()
+        # layer = self.mMapLayerComboBox_wybor_warstwy.currentLayer()
+        # features = zaznaczone_elementy.getFeatures()
         
         X = []
         Y = []
         
         # Point layer
-        for f in layer.getFeatures():
+        for f in zaznaczone_elementy.getFeatures():
             geom = f.geometry()
             y = geom.asPoint().y()
             x = geom.asPoint().x()
             X.append(x)
             Y.append(y)
-            
+        self.textBrowser_info_zwrotne.append(str(X))   
         odl = np.sqrt((X[1] - X[0])**2 + (Y[1] - Y[0])**2)
         
         self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczona odległość wynosi:\n{odl:0.3f} [nieznanej jednostki]')
