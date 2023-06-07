@@ -83,10 +83,12 @@ class WtyczkaDialog(QtWidgets.QDialog, FORM_CLASS):
         
         self.textBrowser_info_zwrotne.setText('Zaznacz 2 elementy, aby móc obliczyć odległość.\nZaznacz minimum 3 elementy aby móc obliczyć pole powierzchni.')
         self.pushButton_obl_odleglosc.clicked.connect(self.oblicz_odleglosc)
+        self.pushButton_obl_pole.clicked.connect(self.oblicz_pole)
         
         self.kreska = '-'*46
         
     def oblicz_odleglosc(self):
+        
         zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy.currentLayer().selectedFeatures()
         liczba_zaznaczonych_elementow = len(zaznaczone_elementy)
         
@@ -118,4 +120,35 @@ class WtyczkaDialog(QtWidgets.QDialog, FORM_CLASS):
         else:
             
             self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za dużą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
+        
+    def oblicz_pole(self):
+        
+        zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy.currentLayer().selectedFeatures()
+        liczba_zaznaczonych_elementow = len(zaznaczone_elementy)
+        
+        # self.textBrowser_info_zwrotne.append(f'{self.kreska}\nLiczba zaznaczonych elementów wynosi:\n{liczba_zaznaczonych_elementow}')
+        
+        # "layer" is a QgsVectorLayer instance
+        layer = self.mMapLayerComboBox_wybor_warstwy.currentLayer()
+
+        X = []
+        Y = []
+        selection = layer.selectedFeatures()
+        
+        if liczba_zaznaczonych_elementow > 2:
+            
+            for feature in selection:
+                geom = feature.geometry()
+                y = geom.asPoint().y()
+                x = geom.asPoint().x()
+                X.append(x)
+                Y.append(y)   
+            pole =  0.5*np.abs(np.dot(X,np.roll(Y,1))-np.dot(Y,np.roll(X,1)))
+            
+            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczone pole powierzchni wynosi:\n{pole:0.3f} [nieznanej jednostki]')
+            
+        else:
+            
+            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za małą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć co najmniej 3 elementy!')
+
         
