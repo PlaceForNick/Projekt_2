@@ -89,23 +89,33 @@ class WtyczkaDialog(QtWidgets.QDialog, FORM_CLASS):
     def oblicz_odleglosc(self):
         zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy.currentLayer().selectedFeatures()
         liczba_zaznaczonych_elementow = len(zaznaczone_elementy)
-        self.textBrowser_info_zwrotne.append(f'{self.kreska}\nLiczba zaznaczonych elementów wynosi:\n{liczba_zaznaczonych_elementow}')
+        
+        # self.textBrowser_info_zwrotne.append(f'{self.kreska}\nLiczba zaznaczonych elementów wynosi:\n{liczba_zaznaczonych_elementow}')
         
         # "layer" is a QgsVectorLayer instance
-        # layer = self.mMapLayerComboBox_wybor_warstwy.currentLayer()
-        # features = zaznaczone_elementy.getFeatures()
-        
+        layer = self.mMapLayerComboBox_wybor_warstwy.currentLayer()
+
         X = []
         Y = []
+        selection = layer.selectedFeatures()
         
-        # Point layer
-        for f in zaznaczone_elementy.getFeatures():
-            geom = f.geometry()
-            y = geom.asPoint().y()
-            x = geom.asPoint().x()
-            X.append(x)
-            Y.append(y)
-        self.textBrowser_info_zwrotne.append(str(X))   
-        odl = np.sqrt((X[1] - X[0])**2 + (Y[1] - Y[0])**2)
+        if liczba_zaznaczonych_elementow == 2:
+            
+            for feature in selection:
+                geom = feature.geometry()
+                y = geom.asPoint().y()
+                x = geom.asPoint().x()
+                X.append(x)
+                Y.append(y)   
+            odl = np.sqrt((X[1] - X[0])**2 + (Y[1] - Y[0])**2)
+            
+            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczona odległość wynosi:\n{odl:0.3f} [nieznanej jednostki]')
+            
+        elif liczba_zaznaczonych_elementow < 2:
+            
+            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za małą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
+
+        else:
+            
+            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za dużą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
         
-        self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczona odległość wynosi:\n{odl:0.3f} [nieznanej jednostki]')
