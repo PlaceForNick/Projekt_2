@@ -61,16 +61,35 @@ from qgis.PyQt.QtGui import (
     QColor,
 )
 
+from qgis.core import Qgis
 
+from qgis.core import (
+    QgsMessageLog,
+    QgsGeometry,
+)
 
+from qgis.gui import (
+    QgsMessageBar,
+)
 
+from qgis.PyQt.QtWidgets import (
+    QSizePolicy,
+    QPushButton,
+    QDialog,
+    QGridLayout,
+    QDialogButtonBox,
+)
+
+from qgis.utils import iface
+from PyQt5 import QtGui
+# from PyQt5.QtCore import Qt
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'plugin_dialog_base.ui'))
 
 
-class WtyczkaDialog(QtWidgets.QDialog, FORM_CLASS):
+class WtyczkaDialog( QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
         super(WtyczkaDialog, self).__init__(parent)
@@ -111,16 +130,19 @@ class WtyczkaDialog(QtWidgets.QDialog, FORM_CLASS):
                 Y.append(y)   
             odl = np.sqrt((X[1] - X[0])**2 + (Y[1] - Y[0])**2)
             
-            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczona odległość wynosi:\n{odl:0.3f} [nieznanej jednostki]')
+            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczona odległość wynosi:\n{odl:0.3f} m')
+            self.__wypluwacz('Success', f'Obliczono odległość: {odl:0.3f} m')
             
         elif liczba_zaznaczonych_elementow < 2:
             
             self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za małą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
-
+            self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
+        
         else:
             
             self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za dużą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
-        
+            self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
+            
     def oblicz_pole(self):
         
         zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy.currentLayer().selectedFeatures()
@@ -145,10 +167,29 @@ class WtyczkaDialog(QtWidgets.QDialog, FORM_CLASS):
                 Y.append(y)   
             pole =  0.5*np.abs(np.dot(X,np.roll(Y,1))-np.dot(Y,np.roll(X,1)))
             
-            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczone pole powierzchni wynosi:\n{pole:0.3f} [nieznanej jednostki]')
-            
+            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczone pole powierzchni wynosi:\n{pole:0.3f} m2')
+            self.__wypluwacz('Success', f'Obliczono pole powierzchni: {pole:0.3f} m2')
+
         else:
             
             self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za małą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć co najmniej 3 elementy!')
-
+            self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
+            
+    def __wypluwacz(self, typ, tekst):
+        
+        if typ == 'Info':
+            poziom = Qgis.Info
+        elif typ == 'Error':
+            poziom = Qgis.Critical
+        elif typ == 'Warning':
+            poziom = Qgis.Warning 
+        else: 
+            poziom = Qgis.Success
+            
+        widget = iface.messageBar().createMessage(typ, tekst)
+        button = QPushButton(widget)
+        button.setText("Ok")
+        # button.pressed.connect(WtyczkaDialog.show()) 
+        widget.layout().addWidget(button)
+        iface.messageBar().pushWidget(widget, level=poziom, duration=5)
         
