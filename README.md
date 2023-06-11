@@ -19,7 +19,7 @@ Aby skorzystać z wtyczki należy pobrać i otworzyć program QGIS oraz wyszuka�
 
 ![352822457_210796951873256_7899962594142674117_n](https://github.com/PlaceForNick/Projekt_2/assets/129080867/699c48db-0ed0-467f-92fe-e81721bddc88)
 
-Przed wypróbowaniem wtyczki należy pobrać dane (punkty o współrzędnych XYZ). Wybieramy naszą wtyczke z listy i wyświetla nam się panel roboczy wtyczki.
+Przed wypróbowaniem wtyczki należy pobrać dane, które będą posiadać infomację o położeniu punktu (X,Y) oraz wysokości. Wybieramy naszą wtyczke z listy i wyświetla nam się panel roboczy wtyczki.
 
 ![353376590_1206222253412911_6168482014503073159_n](https://github.com/PlaceForNick/Projekt_2/assets/129080867/10b85030-76df-472b-9def-59925f98ccfd)
 
