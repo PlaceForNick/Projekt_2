@@ -52,7 +52,8 @@ from qgis.core import (
   QgsVectorFileWriter,
   QgsWkbTypes,
   QgsSpatialIndex,
-  QgsVectorLayerUtils
+  QgsVectorLayerUtils,
+  QgsRaster
 )
 
 from qgis.core.additions.edit import edit
@@ -100,81 +101,149 @@ class WtyczkaDialog( QDialog, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
         
-        self.textBrowser_info_zwrotne.setText('Zaznacz 2 elementy, aby móc obliczyć odległość.\nZaznacz minimum 3 elementy aby móc obliczyć pole powierzchni.')
-        self.pushButton_obl_odleglosc.clicked.connect(self.oblicz_odleglosc)
+        self.textBrowser_info_zwrotne.setText('Aby obliczyć różnicę wysokości, zaznacz 2 punkty na wybranej warswie wektorowej oraz wybierz warstwę rastrową, na której są one położone.\nAby obliczyć pole powierzchni zaznacz minimum 3 punkty na wybranej warstwie wektorowej')
+        # self.pushButton_obl_odleglosc.clicked.connect(self.oblicz_odleglosc)
+        self.pushButton_obl_wysokosc.clicked.connect(self.oblicz_wysokosc)
         self.pushButton_obl_pole.clicked.connect(self.oblicz_pole)
         
         self.kreska = '-'*46
         
-    def oblicz_odleglosc(self):
+    # def oblicz_odleglosc(self):
         
-        zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy.currentLayer().selectedFeatures()
-        liczba_zaznaczonych_elementow = len(zaznaczone_elementy)
+    #     zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy.currentLayer().selectedFeatures()
+    #     liczba_zaznaczonych_elementow = len(zaznaczone_elementy)
         
-        # self.textBrowser_info_zwrotne.append(f'{self.kreska}\nLiczba zaznaczonych elementów wynosi:\n{liczba_zaznaczonych_elementow}')
-        
-        # "layer" is a QgsVectorLayer instance
-        layer = self.mMapLayerComboBox_wybor_warstwy.currentLayer()
+    #     # self.textBrowser_info_zwrotne.append(f'{self.kreska}\nLiczba zaznaczonych elementów wynosi:\n{liczba_zaznaczonych_elementow}')
+    #     # item = layout.itemById(item_name)
+    #     # item_size = item.sizeWithUnits()
+    #     # item_height = item_size.height()
+    #     # "layer" is a QgsVectorLayer instance
+    #     layer = self.mMapLayerComboBox_wybor_warstwy.currentLayer()
 
-        X = []
-        Y = []
-        selection = layer.selectedFeatures()
+    #     X = []
+    #     Y = []
+    #     selection = layer.selectedFeatures()
         
-        if liczba_zaznaczonych_elementow == 2:
+    #     if liczba_zaznaczonych_elementow == 2:
             
-            for feature in selection:
-                geom = feature.geometry()
-                y = geom.asPoint().y()
-                x = geom.asPoint().x()
-                X.append(x)
-                Y.append(y)   
-            odl = np.sqrt((X[1] - X[0])**2 + (Y[1] - Y[0])**2)
+    #         for feature in selection:
+    #             geom = feature.geometry()
+    #             y = geom.asPoint().y()
+    #             x = geom.asPoint().x()
+    #             X.append(x)
+    #             Y.append(y)   
+    #         odl = np.sqrt((X[1] - X[0])**2 + (Y[1] - Y[0])**2)
             
-            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczona odległość wynosi:\n{odl:0.3f} m')
-            self.__wypluwacz('Success', f'Obliczono odległość: {odl:0.3f} m')
+    #         self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczona odległość wynosi:\n{odl:0.3f} m')
+    #         self.__wypluwacz('Success', f'Obliczono odległość: {odl:0.3f} m')
             
-        elif liczba_zaznaczonych_elementow < 2:
+    #     elif liczba_zaznaczonych_elementow < 2:
             
-            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za małą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
-            self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
+    #         self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za małą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
+    #         self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
         
-        else:
+    #     else:
             
-            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za dużą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
-            self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
+    #         self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za dużą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
+    #         self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
             
     def oblicz_pole(self):
         
-        zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy.currentLayer().selectedFeatures()
-        liczba_zaznaczonych_elementow = len(zaznaczone_elementy)
+        try:
+            zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy_wektor.currentLayer().selectedFeatures()
+            liczba_zaznaczonych_elementow = len(zaznaczone_elementy)
+            
+            # self.textBrowser_info_zwrotne.append(f'{self.kreska}\nLiczba zaznaczonych elementów wynosi:\n{liczba_zaznaczonych_elementow}')
+            
+            # "layer" is a QgsVectorLayer instance
+            layer = self.mMapLayerComboBox_wybor_warstwy_wektor.currentLayer()
+    
+            X = []
+            Y = []
+            selection = layer.selectedFeatures()
+            
+            if liczba_zaznaczonych_elementow > 2:
+                
+                for feature in selection:
+                    geom = feature.geometry()
+                    y = geom.asPoint().y()
+                    x = geom.asPoint().x()
+                    X.append(x)
+                    Y.append(y)   
+                pole =  0.5*np.abs(np.dot(X,np.roll(Y,1))-np.dot(Y,np.roll(X,1)))
+                
+                i = 0
+                ID = []
+                while i < liczba_zaznaczonych_elementow:
+                    Id = zaznaczone_elementy[i][0]
+                    ID.append(Id)
+                    i += 1
+                    
+                self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczone pole powierzchni pomiędzy punktami {ID} wynosi:\n{pole:0.3f} m2')
+                self.__wypluwacz('Success', f'Obliczono pole powierzchni: {pole:0.3f} m2')
+    
+            else:
+                
+                self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za małą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć co najmniej 3 elementy!')
+                self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
+                
+        except AttributeError:
+            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nW okienku "Wybierz warstwę wektorową:" wybrano niepoprawny typ warstwy! Aby skorzystać z tej funkcji, wybierz warstwę wektorową zawierającą punkty.')
+            self.__wypluwacz('Warning', 'Nie zaznaczono warswy wektorowej!')
+            
+    def oblicz_wysokosc(self):
         
-        # self.textBrowser_info_zwrotne.append(f'{self.kreska}\nLiczba zaznaczonych elementów wynosi:\n{liczba_zaznaczonych_elementow}')
-        
-        # "layer" is a QgsVectorLayer instance
-        layer = self.mMapLayerComboBox_wybor_warstwy.currentLayer()
-
-        X = []
-        Y = []
-        selection = layer.selectedFeatures()
-        
-        if liczba_zaznaczonych_elementow > 2:
+        try:
+            zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy_wektor.currentLayer().selectedFeatures()
+            liczba_zaznaczonych_elementow = len(zaznaczone_elementy)
+    
+            point_layer = self.mMapLayerComboBox_wybor_warstwy_wektor.currentLayer()
+            raster_layer = self.mMapLayerComboBox_wybor_warstwy_raster.currentLayer()
             
-            for feature in selection:
-                geom = feature.geometry()
-                y = geom.asPoint().y()
-                x = geom.asPoint().x()
-                X.append(x)
-                Y.append(y)   
-            pole =  0.5*np.abs(np.dot(X,np.roll(Y,1))-np.dot(Y,np.roll(X,1)))
+            rprovider = raster_layer.dataProvider()
+    
+            selection = point_layer.selectedFeatures()
+                
+            if liczba_zaznaczonych_elementow == 2:
+                
+                points = []
+                values = []
+                for feature in selection:
+                    point = feature.geometry().asPoint()
+                    value = rprovider.identify(point, QgsRaster.IdentifyFormatValue).results()[1]
+                    points.append(point)
+                    values.append(value)
+                
+                try:
+                    wys = values[1] - values[0]
+                    
+                    i = 0
+                    ID = []
+                    while i < liczba_zaznaczonych_elementow:
+                        Id = zaznaczone_elementy[i][0]
+                        ID.append(Id)
+                        i += 1
+                        
+                    self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczona różnica wysokości między punktami {ID} wynosi:\n{wys:0.3f} m')
+                    self.__wypluwacz('Success', f'Obliczono odległość: {wys:0.3f} m')
+                except TypeError:
+                    self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczone punkty znajdują się poza wybraną warswą rastrową z ich wysokościami! Jeśli punkty znajdują się nad 2 różnymi warstwami, musisz je wcześniej złączyć.')
+                    self.__wypluwacz('Warning', 'Nie zaznaczono warswy rastrowej!')
+    
+            elif liczba_zaznaczonych_elementow < 2:
+    
+                self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za małą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
+                self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
             
-            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczone pole powierzchni wynosi:\n{pole:0.3f} m2')
-            self.__wypluwacz('Success', f'Obliczono pole powierzchni: {pole:0.3f} m2')
-
-        else:
-            
-            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za małą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć co najmniej 3 elementy!')
-            self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
-            
+            else:
+                
+                self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za dużą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
+                self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
+                
+        except AttributeError:
+            self.textBrowser_info_zwrotne.append(f'{self.kreska}\nW okienku "Wybierz warstwę wektorową:" wybrano niepoprawny typ warstwy! Aby skorzystać z tej funkcji, wybierz warstwę wektorową zawierającą punkty.')
+            self.__wypluwacz('Warning', 'Nie zaznaczono warswy wektorowej!')
+   
     def __wypluwacz(self, typ, tekst):
         
         if typ == 'Info':

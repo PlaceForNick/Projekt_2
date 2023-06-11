@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>585</height>
+    <height>675</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QDialogButtonBox" name="button_box_ok_anuluj">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>550</y>
+     <x>30</x>
+     <y>620</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -29,7 +29,7 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QgsMapLayerComboBox" name="mMapLayerComboBox_wybor_warstwy">
+  <widget class="QgsMapLayerComboBox" name="mMapLayerComboBox_wybor_warstwy_wektor">
    <property name="geometry">
     <rect>
      <x>60</x>
@@ -39,24 +39,11 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_obl_odleglosc">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>100</y>
-     <width>161</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Oblicz odległość</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="pushButton_obl_pole">
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>130</y>
+     <y>200</y>
      <width>161</width>
      <height>28</height>
     </rect>
@@ -69,20 +56,20 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>170</y>
+     <y>250</y>
      <width>251</width>
      <height>21</height>
     </rect>
    </property>
    <property name="text">
-    <string>Informacja zwrotna programu:</string>
+    <string>Komunikaty:</string>
    </property>
   </widget>
   <widget class="QTextBrowser" name="textBrowser_info_zwrotne">
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>190</y>
+     <y>270</y>
      <width>271</width>
      <height>311</height>
     </rect>
@@ -98,7 +85,43 @@
     </rect>
    </property>
    <property name="text">
-    <string>Wybierz warswę:</string>
+    <string>Wybierz warswę wektorową:</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_obl_wysokosc">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>170</y>
+     <width>161</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Oblicz różnicę wysokości</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_info_srodek">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>100</y>
+     <width>251</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Wybierz warswę rastrową:</string>
+   </property>
+  </widget>
+  <widget class="QgsMapLayerComboBox" name="mMapLayerComboBox_wybor_warstwy_raster">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>120</y>
+     <width>271</width>
+     <height>27</height>
+    </rect>
    </property>
   </widget>
  </widget>
