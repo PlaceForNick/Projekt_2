@@ -39,6 +39,8 @@ Na ten moment program drukuje nam wyniki w metrach i metrach kwadratowych, nie m
 Przy wyborze warstwy z ogromną ilością obiektów istnieje prawdopodobieństwo krótkiego zawieszenia programu.
 ## Obliczanie pola 
 W szczególnych przypadkach algorytm wtyczki zaczyna obliczanie zgodnie z ruchem wskazówek zegara ,a następnie zmienia kierunek na przeciwny. Niestety na ten moment nie jesteśmy w stanie tego błędu poprawić.
+## Obliczanie wysokości
+W przypadku chęci obliczenia wysokości należy zwrócić uwagę aby warstwa wektorowa zawierająca punkty oraz warstwa rastrowa zawierająca NMT były w tym samym układnie współrzędnych. W przeciwnym razie program może uznać, iż punkty znajdują się poza warstwą podkładową i w konsekwencji zwrócić błąd.
 
 
 
