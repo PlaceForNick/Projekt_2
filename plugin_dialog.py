@@ -102,60 +102,17 @@ class WtyczkaDialog( QDialog, FORM_CLASS):
         self.setupUi(self)
         
         self.textBrowser_info_zwrotne.setText('Aby obliczyć różnicę wysokości, zaznacz 2 punkty na wybranej warswie wektorowej oraz wybierz warstwę rastrową, na której są one położone.\nAby obliczyć pole powierzchni zaznacz minimum 3 punkty na wybranej warstwie wektorowej')
-        # self.pushButton_obl_odleglosc.clicked.connect(self.oblicz_odleglosc)
         self.pushButton_obl_wysokosc.clicked.connect(self.oblicz_wysokosc)
         self.pushButton_obl_pole.clicked.connect(self.oblicz_pole)
         
         self.kreska = '-'*46
-        
-    # def oblicz_odleglosc(self):
-        
-    #     zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy.currentLayer().selectedFeatures()
-    #     liczba_zaznaczonych_elementow = len(zaznaczone_elementy)
-        
-    #     # self.textBrowser_info_zwrotne.append(f'{self.kreska}\nLiczba zaznaczonych elementów wynosi:\n{liczba_zaznaczonych_elementow}')
-    #     # item = layout.itemById(item_name)
-    #     # item_size = item.sizeWithUnits()
-    #     # item_height = item_size.height()
-    #     # "layer" is a QgsVectorLayer instance
-    #     layer = self.mMapLayerComboBox_wybor_warstwy.currentLayer()
-
-    #     X = []
-    #     Y = []
-    #     selection = layer.selectedFeatures()
-        
-    #     if liczba_zaznaczonych_elementow == 2:
-            
-    #         for feature in selection:
-    #             geom = feature.geometry()
-    #             y = geom.asPoint().y()
-    #             x = geom.asPoint().x()
-    #             X.append(x)
-    #             Y.append(y)   
-    #         odl = np.sqrt((X[1] - X[0])**2 + (Y[1] - Y[0])**2)
-            
-    #         self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczona odległość wynosi:\n{odl:0.3f} m')
-    #         self.__wypluwacz('Success', f'Obliczono odległość: {odl:0.3f} m')
-            
-    #     elif liczba_zaznaczonych_elementow < 2:
-            
-    #         self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za małą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
-    #         self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
-        
-    #     else:
-            
-    #         self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za dużą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
-    #         self.__wypluwacz('Warning', 'Zaznaczono niepoprawną ilość elementów!')
-            
+                    
     def oblicz_pole(self):
         
         try:
             zaznaczone_elementy = self.mMapLayerComboBox_wybor_warstwy_wektor.currentLayer().selectedFeatures()
             liczba_zaznaczonych_elementow = len(zaznaczone_elementy)
             
-            # self.textBrowser_info_zwrotne.append(f'{self.kreska}\nLiczba zaznaczonych elementów wynosi:\n{liczba_zaznaczonych_elementow}')
-            
-            # "layer" is a QgsVectorLayer instance
             layer = self.mMapLayerComboBox_wybor_warstwy_wektor.currentLayer()
     
             X = []
@@ -226,10 +183,11 @@ class WtyczkaDialog( QDialog, FORM_CLASS):
                         
                     self.textBrowser_info_zwrotne.append(f'{self.kreska}\nObliczona różnica wysokości między punktami {ID} wynosi:\n{wys:0.3f} m')
                     self.__wypluwacz('Success', f'Obliczono odległość: {wys:0.3f} m')
+
                 except TypeError:
                     self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczone punkty znajdują się poza wybraną warswą rastrową z ich wysokościami! Jeśli punkty znajdują się nad 2 różnymi warstwami, musisz je wcześniej złączyć.')
                     self.__wypluwacz('Warning', 'Nie zaznaczono warswy rastrowej!')
-    
+
             elif liczba_zaznaczonych_elementow < 2:
     
                 self.textBrowser_info_zwrotne.append(f'{self.kreska}\nZaznaczono za małą ilość elementów!\nAby skorzystać z tej funkcji musisz zaznaczyć dokładnie 2 elementy!')
