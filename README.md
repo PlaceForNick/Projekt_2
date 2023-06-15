@@ -10,7 +10,8 @@ Wtyczka oferuje następujące właściwości:
 - obliczenie pole powierzchni na podstawie współrzędnych zaznaczonych punktów metodą Gaussa,
 - aby skorzystać z wtyczki należy pobrać program QGIS w wersji 3.28.4 oraz wtyczke z zdalnego respozytorium,
 - system operacyjny Windows 11.
-- obługuje dane o współrzędnych XYZ.
+- osbługuje dane o współrzędnych XYZ.
+- obsługiwane formaty warstw z danymi wejściowymi to .shp (dla danych wektorowych) oraz .asc (dla rastrowych danych wysokościowych). Działanie dla innych formatów plików jest możliwe, jednakże nie zostało ono szeroko sprawdzone skąd takie próby są niezalecane.
 
 
 # Użycie wtyczki na przykładowych danych 
@@ -33,6 +34,12 @@ Wtyczka ma na celu w łatwy i przyjemny sposób liczyć różnicę wysokości or
 
 
 # Znane błędy i niedoskonałości
+## Format pliku
+Próba uruchomienia wtyczki z użyciem niewspieranych typów plików może się nie powieść. Program nie jest w stanie obsłużyć wszstkich istniejących formatów plików, z oczywistych względów. W tym przypadku obsługiwane formaty to:
+- .shp
+- .asc
+
+Przykładowe pliki o takich rozszerzeniach, na których były wykonywane testy zostały ujęte w repozytorium, pod folderm "przykladowe_warstwy". Aby je poprawnie wczytać należy zastosować układ współrzędnych EPSG:2180.
 ## Jednostki 
 Na ten moment program drukuje nam wyniki w metrach i metrach kwadratowych, nie ma niestety możliwości wybrania w jakich jednostakch chce się uzykać wyniki operacji.
 ## Optymalizacja
